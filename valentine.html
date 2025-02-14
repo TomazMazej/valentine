@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will You Be My Valentine?</title>
+  <style>
+    body {
+      font-family: 'Pacifico', cursive;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      text-align: center;
+      color: #6a1b9a;
+      overflow: hidden;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff6f61" d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"/></svg>'), auto;
+    }
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 2s ease-in-out;
+    }
+    .buttons {
+      display: flex;
+      gap: 20px;
+      animation: slideIn 1.5s ease-in-out;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    #yesButton {
+      background-color: #ff6f61;
+      color: white;
+    }
+    #yesButton:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    #noButton {
+      background-color: #6a1b9a;
+      color: white;
+    }
+    #noButton:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    .hidden {
+      display: none;
+    }
+    .message {
+      font-size: 2.5rem;
+      margin-top: 20px;
+      animation: fadeIn 2s ease-in-out;
+      color: #6a1b9a;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    .gif {
+      margin-top: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .gif img {
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Will You Be My Valentine?</h1>
+  <div class="buttons">
+    <button id="yesButton">Yes</button>
+    <button id="noButton">No</button>
+  </div>
+  <div class="message hidden">
+    You make me the happiest person in the world! ❤️
+  </div>
+  <div class="gif hidden">
+    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjZiMGpxYm5reHh5ZDd1MXQyanA3NDg5MDZ6MmlzeGU0Y28wNjNqcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/c76IJLufpNwSULPk77/giphy.gif" alt="Cute Teddy Bear with Heart">
+  </div>
+
+  <!-- Confetti Container -->
+  <canvas id="confetti" class="hidden" style="position: fixed; top: 0; left: 0; pointer-events: none;"></canvas>
+
+  <!-- Audio for Background Music -->
+  <audio id="backgroundMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const yesButton = document.getElementById('yesButton');
+    const noButton = document.getElementById('noButton');
+    const message = document.querySelector('.message');
+    const gifContainer = document.querySelector('.gif');
+    const confettiCanvas = document.getElementById('confetti');
+    const backgroundMusic = document.getElementById('backgroundMusic');
+
+    // Play background music when the page loads
+    backgroundMusic.play();
+
+    // Move the "No" button when hovered
+    noButton.addEventListener('mouseover', () => {
+      const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+      noButton.style.position = 'absolute';
+      noButton.style.left = `${x}px`;
+      noButton.style.top = `${y}px`;
+    });
+
+    // When "Yes" is clicked
+    yesButton.addEventListener('click', () => {
+      document.querySelector('.buttons').classList.add('hidden');
+      message.classList.remove('hidden');
+      gifContainer.classList.remove('hidden');
+      confettiCanvas.classList.remove('hidden');
+      startConfetti();
+    });
+
+    // Confetti Animation
+    function startConfetti() {
+      const canvas = confettiCanvas;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const confettiPieces = [];
+      const colors = ['#ff6f61', '#6a1b9a', '#ffeb3b', '#4caf50'];
+
+      class Confetti {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height - canvas.height;
+          this.size = Math.random() * 10 + 5;
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.speed = Math.random() * 3 + 2;
+          this.angle = Math.random() * 360;
+        }
+        update() {
+          this.y += this.speed;
+          this.x += Math.sin(this.angle) * 2;
+          this.angle += 0.1;
+          if (this.y > canvas.height) {
+            this.y = -this.size;
+            this.x = Math.random() * canvas.width;
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.fillStyle = this.color;
+          ctx.fillRect(this.x, this.y, this.size, this.size);
+          ctx.closePath();
+        }
+      }
+
+      for (let i = 0; i < 100; i++) {
+        confettiPieces.push(new Confetti());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettiPieces.forEach(piece => {
+          piece.update();
+          piece.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+  </script>
+</body>
+</html>
